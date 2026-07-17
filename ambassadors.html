@@ -100,9 +100,7 @@ footer{border-top:1px solid var(--line);padding:1.6rem 0;font-size:.82rem;color:
     <h1>Join Our <span class="red" style="font-style:italic">Ambassador</span> Network</h1>
     <p class="lede">Love bringing brands to life? Apply to join our network of promoters and brand ambassadors for activations, launches and events. Complete the form below — it takes about three minutes.</p>
 
-    <form id="ambForm" name="ambassador-application" method="POST" data-netlify="true" netlify-honeypot="bot-field" onsubmit="return submitApp(this)">
-      <input type="hidden" name="form-name" value="ambassador-application">
-      <p style="position:absolute;left:-9999px" aria-hidden="true"><label>Leave this field blank: <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
+    <form id="ambForm" onsubmit="return submitApp(this)">
       <div class="row2">
         <div><label for="a-name">Full Name</label><input id="a-name" name="name" required autocomplete="name"></div>
         <div><label for="a-email">Email Address</label><input id="a-email" name="email" type="email" required autocomplete="email"></div>
@@ -146,12 +144,12 @@ footer{border-top:1px solid var(--line);padding:1.6rem 0;font-size:.82rem;color:
       <div><label for="a-extra">Any additional comments <span class="opt">(optional)</span></label><textarea id="a-extra" name="extra" style="min-height:80px"></textarea></div>
 
       <button class="btn btn-solid" type="submit">Submit Application</button>
-      <p class="form-note">Submitting sends your application straight to us — no extra steps.</p>
+      <p class="form-note">Submitting opens your email app with your full application ready to go — press send in your email app to complete it.</p>
     </form>
 
     <div id="confirmation" role="status">
       <h2 class="serif">Thank you for your application.</h2>
-      <p>We have received your information and will contact you if your application is successful.</p>
+      <p>Your email app has opened with your application — please press <strong>send</strong> there to complete it. We have received your information and will contact you if your application is successful.</p>
     </div>
   </div>
 </main>
@@ -160,8 +158,7 @@ footer{border-top:1px solid var(--line);padding:1.6rem 0;font-size:.82rem;color:
 
 <script>
 /* ============================================================
-   PROMOTERS EMAIL ADDRESS — used only as a fallback if the
-   silent form submission fails. Change this one line when the
+   PROMOTERS EMAIL ADDRESS — change this one line when the
    dedicated promoters mailbox is confirmed:
    ============================================================ */
 const PROMOTERS_EMAIL = 'info@nos236creatives.co.za';
@@ -169,17 +166,6 @@ const PROMOTERS_EMAIL = 'info@nos236creatives.co.za';
 document.getElementById('yr').textContent = new Date().getFullYear();
 
 function val(f, n){ return (f[n] && f[n].value ? f[n].value.trim() : '') || '\u2014'; }
-
-function encode(data){
-  return Object.keys(data).map(k => encodeURIComponent(k) + '=' + encodeURIComponent(data[k])).join('&');
-}
-
-function showConfirmation(f){
-  f.style.display = 'none';
-  const c = document.getElementById('confirmation');
-  c.style.display = 'block';
-  c.scrollIntoView({behavior:'smooth', block:'center'});
-}
 
 function submitApp(f){
   const exp = f.querySelector('input[name="exp"]:checked');
@@ -211,37 +197,13 @@ function submitApp(f){
     'Additional comments:',
     val(f,'extra')
   ];
-  const summary = lines.join('\n');
-
-  fetch('/', {
-    method: 'POST',
-    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-    body: encode({
-      'form-name': 'ambassador-application',
-      name: val(f,'name'),
-      email: val(f,'email'),
-      phone: val(f,'phone'),
-      age: val(f,'age'),
-      city: val(f,'city'),
-      province: val(f,'province'),
-      occupation: val(f,'occupation'),
-      social: val(f,'social'),
-      shirt: val(f,'shirt'),
-      pants: val(f,'pants'),
-      why: val(f,'why'),
-      experience: exp ? exp.value : '\u2014',
-      expDetails: val(f,'expDetails'),
-      extra: val(f,'extra'),
-      application: summary
-    })
-  })
-  .then(res => { if (!res.ok) throw new Error('submit failed'); showConfirmation(f); })
-  .catch(() => {
-    const subject = encodeURIComponent('Brand Ambassador Application \u2014 ' + val(f,'name'));
-    window.location.href = 'mailto:' + PROMOTERS_EMAIL + '?subject=' + subject + '&body=' + encodeURIComponent(summary);
-    showConfirmation(f);
-  });
-
+  const subject = encodeURIComponent('Brand Ambassador Application \u2014 ' + val(f,'name'));
+  const body = encodeURIComponent(lines.join('\n'));
+  window.location.href = 'mailto:' + PROMOTERS_EMAIL + '?subject=' + subject + '&body=' + body;
+  f.style.display = 'none';
+  const c = document.getElementById('confirmation');
+  c.style.display = 'block';
+  c.scrollIntoView({behavior:'smooth', block:'center'});
   return false;
 }
 </script>
