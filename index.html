@@ -502,7 +502,9 @@ footer a:hover{color:#fff}
           <li><span class="lbl">Location</span><span>Limpopo, South Africa</span></li>
         </ul>
       </div>
-      <form onsubmit="return sendWA(this)" id="contactForm">
+      <form onsubmit="return sendWA(this)" id="contactForm" name="contact-enquiry" method="POST" data-netlify="true" netlify-honeypot="bot-field">
+        <input type="hidden" name="form-name" value="contact-enquiry">
+        <p style="position:absolute;left:-9999px" aria-hidden="true"><label>Leave this field blank: <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
         <div><label for="f-name">Your name</label><input id="f-name" name="name" required autocomplete="name"></div>
         <div><label for="f-org">Company / organisation</label><input id="f-org" name="org" autocomplete="organization"></div>
         <div><label for="f-msg">How can we help?</label><textarea id="f-msg" name="msg" required></textarea></div>
@@ -512,7 +514,10 @@ footer a:hover{color:#fff}
           </button>
           <button class="btn btn-ghost" type="button" style="cursor:pointer" onclick="sendMail(document.getElementById('contactForm'))">Send by email</button>
         </div>
-        <p class="form-note">Your message, name and company are filled in automatically — WhatsApp or your email app opens, and you press send.</p>
+        <p class="form-note">WhatsApp opens with your message ready to send — or send it straight to our inbox by email, no extra steps.</p>
+        <div id="contactConfirm" style="display:none;margin-top:1rem;padding:1.2rem 1.4rem;border:1px solid var(--line);border-radius:2px;background:rgba(0,0,0,.25)" role="status">
+          <p style="color:var(--muted)">Thank you — your enquiry has been sent. We'll be in touch shortly.</p>
+        </div>
       </form>
     </div>
   </div>
@@ -568,10 +573,26 @@ document.querySelectorAll('#navLinks a').forEach(a=>a.addEventListener('click',(
 function buildMsg(f){
   return f.msg.value + '\n\n— ' + f.name.value + (f.org.value ? ', ' + f.org.value : '');
 }
+function encode(data){
+  return Object.keys(data).map(k => encodeURIComponent(k) + '=' + encodeURIComponent(data[k])).join('&');
+}
 function sendMail(f){
   if(!f.reportValidity()) return false;
-  const subject = encodeURIComponent('Enquiry from ' + f.name.value + (f.org.value ? ' — ' + f.org.value : ''));
-  window.location.href = 'mailto:info@nos236creatives.co.za?subject=' + subject + '&body=' + encodeURIComponent(buildMsg(f));
+  const subject = 'Enquiry from ' + f.name.value + (f.org.value ? ' — ' + f.org.value : '');
+  const message = buildMsg(f);
+  fetch('/', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+    body: encode({'form-name':'contact-enquiry', name: f.name.value, org: f.org.value, subject: subject, message: message})
+  })
+  .then(res => {
+    if (!res.ok) throw new Error('submit failed');
+    f.style.display = 'none';
+    document.getElementById('contactConfirm').style.display = 'block';
+  })
+  .catch(() => {
+    window.location.href = 'mailto:info@nos236creatives.co.za?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(message);
+  });
   return false;
 }
 function sendWA(f){
