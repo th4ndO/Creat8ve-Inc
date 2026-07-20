@@ -167,6 +167,7 @@
 | 24 | Strip item → "Limpopo based, serving clients nationwide" | LIVE |
 | 25 | Ambassador page created + integrated (nav link w/ megaphone icon, Apply Now button); "Let's talk" → Website-Enquiry mailto | LIVE |
 | 26 | `PROMOTERS_EMAIL` set to client-confirmed `promoters@nos236creatives.co.za` (was a stand-in on `info@`) | LIVE |
+| 27 | Mailto CTA buttons (nav, hero, mobile menu) renamed **"Let's talk" → "Contact Us"** per written dev-requirements doc; ambassador-page confirmation copy tightened to match the doc's exact wording, with the "press send" mailto caveat kept as a smaller secondary note | LIVE |
 
 ## 8. Open items / risks to surface at the right moment
 
