@@ -82,8 +82,8 @@
   experience Yes/No + details, comments). Submit builds an organised plain-text application
   and opens the mail app via mailto, then hides the form and shows the confirmation block.
   **The recipient is a single constant `PROMOTERS_EMAIL` at the top of the page's script**
-  — currently `info@nos236creatives.co.za` as a stand-in; swap when the client supplies the
-  real promoters address.
+  — `promoters@nos236creatives.co.za` (client-confirmed; distinct from the main business
+  address `info@nos236creatives.co.za` used everywhere else on the site).
 
 ## 5. Content (current copy, post client revision doc)
 
@@ -166,12 +166,12 @@
 | 23 | Header tagline removed (brand name only) | LIVE |
 | 24 | Strip item → "Limpopo based, serving clients nationwide" | LIVE |
 | 25 | Ambassador page created + integrated (nav link w/ megaphone icon, Apply Now button); "Let's talk" → Website-Enquiry mailto | LIVE |
+| 26 | `PROMOTERS_EMAIL` set to client-confirmed `promoters@nos236creatives.co.za` (was a stand-in on `info@`) | LIVE |
 
 ## 8. Open items / risks to surface at the right moment
 
 - **Confirm `info@nos236creatives.co.za` mailbox exists** (test email). mailto fails silently
   from the sender's perspective if it doesn't.
-- **Get the real promoters email** for `PROMOTERS_EMAIL` in `ambassadors.html` (one-line swap).
 - **Confirm 081 567 1840 is WhatsApp-registered** (ideally WhatsApp Business) with a live test.
 - "Automatic" email sending (both forms) is mailto-based: the visitor presses send in their
   mail app. True silent submission needs a form backend (Formspree / Web3Forms / Netlify Forms)
